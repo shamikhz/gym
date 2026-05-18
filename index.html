@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Star Gym | Gym Management System</title>
+  
+  <!-- FontAwesome for Premium Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Custom Core Design System Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- ==========================================
+         SIDEBAR NAVIGATION
+         ========================================== -->
+    <aside class="sidebar" id="appSidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-logo">
+          <i class="fa-solid fa-dumbbell"></i>
+        </div>
+        <span class="sidebar-title">Star Gym</span>
+      </div>
+      
+      <ul class="sidebar-menu">
+        <li>
+          <a href="#" class="menu-item active" data-view="dashboard">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="menu-item" data-view="membersList">
+            <i class="fa-solid fa-users"></i>
+            <span>Members</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="menu-item" data-view="addMember">
+            <i class="fa-solid fa-user-plus"></i>
+            <span>Add Member</span>
+          </a>
+        </li>
+      </ul>
+      
+      <!-- Sidebar Profile Section -->
+      <div class="sidebar-profile">
+        <div class="profile-avatar">
+          <i class="fa-solid fa-user-tie"></i>
+        </div>
+        <div class="profile-info">
+          <span class="profile-name">Admin Portal</span>
+          <span class="profile-role">Gym Manager</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ==========================================
+         MAIN WRAPPER AREA
+         ========================================== -->
+    <div class="main-wrapper">
+      
+      <!-- Top Sticky Header -->
+      <header class="main-header">
+        <div class="header-left">
+          <button class="mobile-menu-toggle" id="menuToggle">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          
+          <!-- Localized Table Search -->
+          <div class="header-search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Search members..." id="quickSearch">
+          </div>
+        </div>
+        
+
+      </header>
+
+      <!-- Main Dynamic Content Views -->
+      <main class="view-container">
+        
+        <!-- ==========================================
+             VIEW 1: DYNAMIC DASHBOARD
+             ========================================== -->
+        <section class="view-section active" id="dashboardView">
+          <div class="page-title-block">
+            <h1 class="page-title">Gym Overview</h1>
+            <p class="page-subtitle">Real-time statistics and analytical insights.</p>
+          </div>
+          
+          <!-- 4-Stat Summary Row (Currency signs removed) -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-details">
+                <span class="stat-label">Total Members</span>
+                <span class="stat-value" id="statTotalMembers">0</span>
+                <span class="stat-trend up">
+                  <i class="fa-solid fa-users" style="color: var(--accent-neon); margin-right: 4px;"></i>
+                  <span>Registered Clients</span>
+                </span>
+              </div>
+              <div class="stat-icon">
+                <i class="fa-solid fa-users"></i>
+              </div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-details">
+                <span class="stat-label">Active Members</span>
+                <span class="stat-value" id="statActiveMembers">0</span>
+                <span class="stat-trend up" id="statActivePercentage">0% Active</span>
+              </div>
+              <div class="stat-icon">
+                <i class="fa-solid fa-circle-check"></i>
+              </div>
+            </div>
+            
+            <div class="stat-card secondary">
+              <div class="stat-details">
+                <span class="stat-label">Est. Revenue</span>
+                <span class="stat-value" id="statMonthlyRevenue">₹0</span>
+                <span class="stat-trend up">
+                  <i class="fa-solid fa-chart-line" style="color: var(--accent-cyan); margin-right: 4px;"></i>
+                  <span>Monthly Total</span>
+                </span>
+              </div>
+              <div class="stat-icon">
+                <i class="fa-solid fa-money-bill-trend-up"></i>
+              </div>
+            </div>
+            
+            <div class="stat-card secondary">
+              <div class="stat-details">
+                <span class="stat-label">Premium Plans</span>
+                <span class="stat-value" id="statPremiumPlans">0</span>
+                <span class="stat-trend up">
+                  <i class="fa-solid fa-crown"></i>
+                  <span>Platinum Tier</span>
+                </span>
+              </div>
+              <div class="stat-icon">
+                <i class="fa-solid fa-medal"></i>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Charts Layout Grid -->
+          <div class="charts-grid">
+            <div class="panel-card">
+              <div class="panel-header">
+                <h3 class="panel-title">
+                  <i class="fa-solid fa-chart-simple"></i>
+                  <span>Membership Signups (Monthly)</span>
+                </h3>
+              </div>
+              <div class="chart-container">
+                <canvas id="membershipGrowthChart"></canvas>
+              </div>
+            </div>
+            
+            <div class="panel-card">
+              <div class="panel-header">
+                <h3 class="panel-title">
+                  <i class="fa-solid fa-chart-pie"></i>
+                  <span>Plan Distribution</span>
+                </h3>
+              </div>
+              <div class="chart-container">
+                <canvas id="planDistributionChart"></canvas>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Recent Signups activity -->
+          <div class="recent-activity-panel">
+            <div class="panel-header">
+              <h3 class="panel-title">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <span>Recent Registration Activity</span>
+              </h3>
+            </div>
+            <div class="activity-list" id="activityLogsList">
+              <!-- Dynamically populated activity rows -->
+            </div>
+          </div>
+        </section>
+
+        <!-- ==========================================
+             VIEW 2: MEMBERS DIRECTORY
+             ========================================== -->
+        <section class="view-section" id="membersListView">
+          <div class="page-title-block">
+            <h1 class="page-title">Members Directory</h1>
+            <p class="page-subtitle">View, search, and manage registered members.</p>
+          </div>
+          
+          <!-- Directory Table Controls -->
+          <div class="directory-controls">
+            <div class="filter-group">
+              <select class="select-custom" id="filterPlan">
+                <option value="all">All Plans</option>
+                <option value="Platinum">Platinum</option>
+                <option value="Gold">Gold</option>
+                <option value="Silver">Silver</option>
+              </select>
+              
+              <select class="select-custom" id="filterStatus">
+                <option value="all">All Statuses</option>
+                <option value="Active">Active</option>
+                <option value="Pending">Pending</option>
+                <option value="Expired">Expired</option>
+              </select>
+            </div>
+            
+            <button class="btn-add-primary" id="addMemberQuickBtn">
+              <i class="fa-solid fa-plus"></i>
+              <span>Register New Member</span>
+            </button>
+          </div>
+          
+          <!-- Members Grid/Table Container -->
+          <div class="members-table-container">
+            <table class="members-table">
+              <thead>
+                <tr>
+                  <th>Member Info</th>
+                  <th>Contact Details</th>
+                  <th>Join Date</th>
+                  <th>Trainer</th>
+                  <th>Membership Plan</th>
+                  <th>Monthly Fee</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="membersTableBody">
+                <!-- Dynamically populated table records -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ==========================================
+             VIEW 3: ADD / EDIT MEMBER FORM
+             ========================================== -->
+        <section class="view-section" id="addMemberView">
+          <div class="page-title-block">
+            <h1 class="page-title" id="formHeaderTitle">Member Registration</h1>
+            <p class="page-subtitle" id="formHeaderSubtitle">Register a new client into the database.</p>
+          </div>
+          
+          <div class="form-card">
+            <form id="memberRegisterForm">
+              <!-- Hidden Input to track edits -->
+              <input type="hidden" id="editMemberId">
+              
+              <div class="form-grid">
+                <!-- Name -->
+                <div class="form-group">
+                  <label for="memberName">Full Name</label>
+                  <input type="text" class="form-control" id="memberName" placeholder="e.g. John Doe">
+                </div>
+                
+                <!-- Email -->
+                <div class="form-group">
+                  <label for="memberEmail">Email Address</label>
+                  <input type="email" class="form-control" id="memberEmail" placeholder="e.g. john@example.com">
+                </div>
+                
+                <!-- Phone -->
+                <div class="form-group">
+                  <label for="memberPhone">Phone Number</label>
+                  <input type="tel" class="form-control" id="memberPhone" placeholder="e.g. 555-0199">
+                </div>
+                
+                <!-- Age & Gender Flex -->
+                <div class="form-group">
+                  <div style="display: flex; gap: 16px;">
+                    <div style="flex: 1;">
+                      <label for="memberAge">Age</label>
+                      <input type="number" class="form-control" id="memberAge" min="14" max="100" placeholder="Age">
+                    </div>
+                    <div style="flex: 1.5;">
+                      <label for="memberGender">Gender</label>
+                      <select class="form-control" id="memberGender">
+                        <option value="" selected>Select</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Plan Options Selector (Cards without currency signs) -->
+                <div class="form-group full-width">
+                  <label>Select Membership Plan</label>
+                  <div class="plan-cards-selector">
+                    <label class="plan-card-option silver">
+                      <input type="radio" name="memberPlan" value="Silver" data-fee="35" checked>
+                      <span class="plan-card-inner">
+                        <span class="plan-card-name">Silver Plan</span>
+                        <span class="plan-card-price">₹35<span>/mo</span></span>
+                      </span>
+                    </label>
+                    
+                    <label class="plan-card-option gold">
+                      <input type="radio" name="memberPlan" value="Gold" data-fee="60">
+                      <span class="plan-card-inner">
+                        <span class="plan-card-name">Gold Plan</span>
+                        <span class="plan-card-price">₹60<span>/mo</span></span>
+                      </span>
+                    </label>
+                    
+                    <label class="plan-card-option platinum">
+                      <input type="radio" name="memberPlan" value="Platinum" data-fee="100">
+                      <span class="plan-card-inner">
+                        <span class="plan-card-name">Platinum Plan</span>
+                        <span class="plan-card-price">₹100<span>/mo</span></span>
+                      </span>
+                    </label>
+                  </div>
+                </div>
+                
+                <!-- Trainer Assignment -->
+                <div class="form-group">
+                  <label for="memberTrainer">Assigned Trainer</label>
+                  <select class="form-control" id="memberTrainer">
+                    <option value="None">None (General Entry)</option>
+                    <option value="Alex Rivera">Alex Rivera (Strength Coach)</option>
+                    <option value="Sarah Jenkins">Sarah Jenkins (Cardio & Fitness)</option>
+                    <option value="Marcus Vance">Marcus Vance (Powerlifting)</option>
+                    <option value="Elena Rostova">Elena Rostova (Yoga & Pilates)</option>
+                  </select>
+                </div>
+                
+                <!-- Membership Cost (Auto-calculated / Manual Override) -->
+                <div class="form-group">
+                  <label for="memberFee">Monthly Membership Fee (₹)</label>
+                  <input type="number" class="form-control" id="memberFee" value="35" min="0">
+                </div>
+                
+                <!-- Account Status Options Tile -->
+                <div class="form-group">
+                  <label>Membership Status</label>
+                  <div class="radio-tile-group">
+                    <label class="radio-tile-option">
+                      <input type="radio" name="memberStatus" value="Active" checked>
+                      <span class="radio-tile-inner">Active</span>
+                    </label>
+                    
+                    <label class="radio-tile-option pending">
+                      <input type="radio" name="memberStatus" value="Pending">
+                      <span class="radio-tile-inner">Pending</span>
+                    </label>
+                    
+                    <label class="radio-tile-option expired">
+                      <input type="radio" name="memberStatus" value="Expired">
+                      <span class="radio-tile-inner">Expired</span>
+                    </label>
+                  </div>
+                </div>
+                
+                <!-- Join Date -->
+                <div class="form-group">
+                  <label for="memberJoinDate">Registration Date</label>
+                  <input type="date" class="form-control" id="memberJoinDate">
+                </div>
+                
+                <!-- Notes -->
+                <div class="form-group full-width">
+                  <label for="memberNotes">Additional Notes / Health Disclaimers</label>
+                  <textarea class="form-control" id="memberNotes" rows="3" placeholder="Specify any physical limitations, training goals, or background details..."></textarea>
+                </div>
+              </div>
+              
+              <!-- Form Actions Button Block -->
+              <div class="form-actions">
+                <button type="button" class="btn-secondary" id="btnCancelForm">Cancel</button>
+                <button type="submit" class="btn-primary" id="btnSubmitForm">Register Member</button>
+              </div>
+            </form>
+          </div>
+        </section>
+        
+      </main>
+    </div>
+  </div>
+
+  <!-- Toast Notification Overlay -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ==========================================
+       EXTERNAL SCRIPTS (CDN Libraries)
+       ========================================== -->
+  <!-- Chart.js Core Library -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Supabase JS Client Module -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- Custom Core Application Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
