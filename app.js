@@ -592,8 +592,19 @@ function setupNavigation() {
     });
   });
   
-  menuToggle.addEventListener("click", () => {
+  menuToggle.addEventListener("click", (e) => {
+    e.stopPropagation();
     sidebar.classList.toggle("active");
+  });
+
+  // Close sidebar when clicking outside on mobile
+  document.addEventListener("click", (e) => {
+    if (window.innerWidth <= 900 && 
+        sidebar.classList.contains("active") && 
+        !sidebar.contains(e.target) && 
+        !menuToggle.contains(e.target)) {
+      sidebar.classList.remove("active");
+    }
   });
 }
 
